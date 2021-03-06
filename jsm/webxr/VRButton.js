@@ -33,6 +33,8 @@ class VRButton {
 
 				currentSession = null;
 
+                window.scene.background = null;
+                window.scene.position.z = 0;
 			}
 
 			//
