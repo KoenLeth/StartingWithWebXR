@@ -55,7 +55,7 @@
         let controller;
 
         let reticle, current_object, pmremGenerator, controls, isAR, envmap;
-
+        const group = new THREE.Group();
         let hitTestSource = null;
         let hitTestSourceRequested = false;
 
@@ -71,7 +71,7 @@
         });
 
         $("#ARButton").click(function () {
-            current_object.visible = false;
+            current_object.visible ? current_object.visible = false : current_object.visible = false;
             isAR = true;
         })
 
@@ -86,8 +86,8 @@
 
         function arPlace() {
             if (reticle.visible) {
-                current_object.position.setFromMatrixPosition(reticle.matrix);
-                current_object.visible = true;
+                group.position.setFromMatrixPosition(reticle.matrix);
+                group.visible = true;
             }
 
         }
@@ -109,7 +109,15 @@
                     loader.load(model + ".glb", function (glb) {
 
                         current_object = glb.scene
-                        scene.add(current_object);
+                        if (group.children.length === 0) { group.add(current_object) }
+                        else {
+                            let pos = group.children[group.children.length - 1].position;
+                            console.log(pos)
+                            current_object.position.set(pos.x + 1, 0, 0)
+                            group.add(current_object)
+                        }
+                        console.log(group)
+                        scene.add(group);
 
                         arPlace();
 
@@ -223,8 +231,8 @@
         let touchDown, touchX, touchY, deltaX, deltaY;
 
         function rotateObject() {
-            if (current_object && reticle.visible) {
-                current_object.rotation.y += deltaX / 100;
+            if (group && reticle.visible) {
+                group.rotation.y += deltaX / 100;
             }
         }
 
